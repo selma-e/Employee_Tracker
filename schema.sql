@@ -18,8 +18,6 @@ CREATE TABLE role (
   PRIMARY KEY(id)
 );
 
--- on delete cascade READ
-
 CREATE TABLE employee (
   id INT NOT NULL AUTO_INCREMENT,
   first_name VARCHAR(30) NOT NULL,

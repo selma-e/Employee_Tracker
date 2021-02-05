@@ -5,13 +5,10 @@ require("dotenv").config();
 var connection = mysql.createConnection({
   host: "localhost",
 
-  // Your port; if not 3306
   port: 3306,
 
-  // Your username
   user: "root",
 
-  // Your password
   password: process.env.DB_PASSWORD,
   database: "employee_db",
 });
@@ -39,7 +36,6 @@ function runSearch() {
       ],
     })
     .then(function (answer) {
-      console.log(answer);
       switch (answer.action) {
         case "View all employees":
           allEmployees();
@@ -71,9 +67,9 @@ function runSearch() {
         case "Remove role":
           removeRole();
           break;
-        case "exit":
-          connection.end();
+        case "Quit":
           console.log("Goodbye!");
+          connection.end();
           break;
       }
     });
@@ -133,7 +129,6 @@ function addEmployee() {
       },
     ])
     .then(function (response) {
-      console.log(response);
       var query = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`;
       var values = [
         response.employee_first_name,
@@ -158,7 +153,6 @@ function addDepartment() {
       },
     ])
     .then(function (response) {
-      console.log(response);
       var query = `INSERT INTO department (name) VALUES (?)`;
       var values = response.department_name;
       connection.query(query, values, function (err, res) {
@@ -188,7 +182,6 @@ function addRole() {
       },
     ])
     .then(function (response) {
-      console.log(response);
       var query = `INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`;
       var values = [
         response.role_title,
@@ -217,7 +210,6 @@ function updateRole() {
     var query1 = `SELECT id, title FROM role;`;
     connection.query(query1, function (err, res) {
       if (err) throw err;
-      console.log(res);
       const responseMap1 = res.map(function (array) {
         var object = {
           name: `${array.title}`,
@@ -241,7 +233,6 @@ function updateRole() {
           },
         ])
         .then(function (response) {
-          console.log(response);
           var query = `UPDATE employee SET role_id = ? WHERE id = ?`;
           var values = [response.updated_title, response.updated_id];
           connection.query(query, values, function (err, res) {
