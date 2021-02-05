@@ -32,12 +32,9 @@ function runSearch() {
         "View all roles",
         "View all departments",
         "Add employee",
-        "Remove employee",
-        "Update employee role",
         "Add department",
-        "Remove department",
         "Add role",
-        "Remove role",
+        "Update employee role",
         "Quit",
       ],
     })
@@ -60,7 +57,7 @@ function runSearch() {
           removeEmployee();
           break;
         case "Update employee role":
-          updateEmployee();
+          updateRole();
           break;
         case "Add department":
           addDepartment();
@@ -76,6 +73,7 @@ function runSearch() {
           break;
         case "exit":
           connection.end();
+          console.log("Goodbye!");
           break;
       }
     });
@@ -175,12 +173,12 @@ function addRole() {
     .prompt([
       {
         type: "input",
-        message: "What is the role title?",
+        message: "What is the role's title?",
         name: "role_title",
       },
       {
         type: "integer",
-        message: "What is the role salary?",
+        message: "What is the role's salary?",
         name: "role_salary",
       },
       {
@@ -202,4 +200,55 @@ function addRole() {
         runSearch();
       });
     });
+}
+
+// UPDATE FUNCTIONS
+function updateRole() {
+  var query = `SELECT id, first_name, last_name FROM employee;`;
+  connection.query(query, function (err, res) {
+    if (err) throw err;
+    const responseMap = res.map(function (array) {
+      var object = {
+        name: `${array.first_name} ${array.last_name}`,
+        value: array.id,
+      };
+      return object;
+    });
+    var query1 = `SELECT id, title FROM role;`;
+    connection.query(query1, function (err, res) {
+      if (err) throw err;
+      console.log(res);
+      const responseMap1 = res.map(function (array) {
+        var object = {
+          name: `${array.title}`,
+          value: array.id,
+        };
+        return object;
+      });
+      inquirer
+        .prompt([
+          {
+            type: "list",
+            message: "Which employee would you like to update?",
+            name: "updated_id",
+            choices: responseMap,
+          },
+          {
+            type: "list",
+            message: "What is the employee's new role/title?",
+            name: "updated_title",
+            choices: responseMap1,
+          },
+        ])
+        .then(function (response) {
+          console.log(response);
+          var query = `UPDATE employee SET role_id = ? WHERE id = ?`;
+          var values = [response.updated_title, response.updated_id];
+          connection.query(query, values, function (err, res) {
+            if (err) throw err;
+            runSearch();
+          });
+        });
+    });
+  });
 }

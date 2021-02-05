@@ -1,4 +1,4 @@
-USE employee_db
+USE employee_db;
 
 INSERT INTO department (name) VALUES ("Sales"), ("Product Development"), ("Global Support");
 INSERT INTO role (title, salary, department_id) VALUES ("CSR Tier 3", "60000.00", "3"), ("SDET", "90000.00", "2"), ("MDR", "50000.00", "1"), ("Product Manager", "150000.00", "2"), ("Technical Transition Manager", "70000.00", "3"), ("Account Executive", "90000.00", "1");
